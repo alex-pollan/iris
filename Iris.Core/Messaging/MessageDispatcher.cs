@@ -10,9 +10,9 @@ namespace Iris.Messaging
     public class MessageDispatcher<T> : IMessageDispatcher<T> where T : IUserMessage
     {
         private readonly IMessageDeliverer<T> _messageDeliverer;
-        private readonly IInterprocessMessageDispatcher<T> _interprocessMessageDispatcher;
+        private readonly IInterprocessMessageBroadcaster<T> _interprocessMessageDispatcher;
 
-        public MessageDispatcher(IMessageDeliverer<T> messageDeliverer, IInterprocessMessageDispatcher<T> interprocessMessageDispatcher)
+        public MessageDispatcher(IMessageDeliverer<T> messageDeliverer, IInterprocessMessageBroadcaster<T> interprocessMessageDispatcher)
         {
             _messageDeliverer = messageDeliverer;
             _interprocessMessageDispatcher = interprocessMessageDispatcher;

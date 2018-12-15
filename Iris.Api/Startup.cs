@@ -36,7 +36,7 @@ namespace Iris.Api
             services.AddSingleton<IBusService, BusService<HelloMessage>>();
             services.AddSingleton<INsqConfiguration, NsqConfiguration>();
             services.AddSingleton<IAppRedisConfiguration, AppRedisConfiguration>();
-            services.AddSingleton<IInterprocessMessageDispatcher<HelloMessage>, RedisInterprocessMessageDispatcher<HelloMessage>>();
+            services.AddSingleton<IInterprocessMessageBroadcaster<HelloMessage>, RedisInterprocessMessageBroadcaster<HelloMessage>>();
             services.AddSingleton<IInterprocessMessageReceiver, RedisInterprocessMessageReceiver<HelloMessage>>();
             services.AddSingleton<IInterprocessIdentity, MachineNameInterprocessIdentity>();
             services.AddSingleton<IMessageDispatcher<HelloMessage>, MessageDispatcher<HelloMessage>>();

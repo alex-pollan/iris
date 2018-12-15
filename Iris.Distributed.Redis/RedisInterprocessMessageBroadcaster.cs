@@ -7,13 +7,13 @@ using System.Threading;
 
 namespace Iris.Distributed.Redis
 {
-    public class RedisInterprocessMessageDispatcher<T> : IInterprocessMessageDispatcher<T> where T : IUserMessage
+    public class RedisInterprocessMessageBroadcaster<T> : IInterprocessMessageBroadcaster<T> where T : IUserMessage
     {
         private readonly IAppRedisConfiguration _configuration;
         private readonly IInterprocessIdentity _interprocessIdentity;
         private readonly ILogger _logger;
 
-        public RedisInterprocessMessageDispatcher(IAppRedisConfiguration configuration,
+        public RedisInterprocessMessageBroadcaster(IAppRedisConfiguration configuration,
             IInterprocessIdentity interprocessIdentity, ILogger logger)
         {
             _configuration = configuration;
