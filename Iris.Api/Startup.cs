@@ -31,9 +31,8 @@ namespace Iris.Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSingleton<IWebsocketsHandler<HelloMessage>, WebsocketsHandler<HelloMessage>>();
-            services.AddSingleton<IMessageDeliverer<HelloMessage>>(sp => 
-            sp.GetService<IWebsocketsHandler<HelloMessage>>() as IMessageDeliverer<HelloMessage>);
-            services.AddSingleton<IBusService, BusService<HelloMessage>>();
+            services.AddSingleton(sp => sp.GetService<IWebsocketsHandler<HelloMessage>>() as IMessageDeliverer<HelloMessage>);
+            services.AddSingleton<IInboundMessageQueue, InboundMessageQueue<HelloMessage>>();
             services.AddSingleton<INsqConfiguration, NsqConfiguration>();
             services.AddSingleton<IAppRedisConfiguration, AppRedisConfiguration>();
             services.AddSingleton<IInterprocessMessageBroadcaster<HelloMessage>, RedisInterprocessMessageBroadcaster<HelloMessage>>();

@@ -43,7 +43,7 @@ namespace Iris.Api.Middleware
             await WaitForWebsocketToClose(webSocket);
 
             _logger.Log($"WebsocketsHandler - Removing closed channel: {_connectionRequirement.GetDescription(context)}");
-            _channels.Remove(context.Connection.Id, out Channel removed);
+            _channels.TryRemove(context.Connection.Id, out Channel removed);
         }
 
         public async Task TryToSend(T message)

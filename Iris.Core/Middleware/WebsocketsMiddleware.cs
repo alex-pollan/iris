@@ -1,7 +1,6 @@
 ﻿using Iris.Distributed;
 using Iris.Logging;
 using Iris.Messaging;
-using Iris.Messaging.Nsq;
 using Microsoft.AspNetCore.Http;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
@@ -12,19 +11,19 @@ namespace Iris.Api.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IWebsocketsHandler<T> _handler;
-        private readonly IBusService _busService;
+        private readonly IInboundMessageQueue _inboundMessageQueue;
         private readonly IInterprocessMessageReceiver _interProcessMessageReceiver;
         private readonly ILogger _logger;
         private readonly object _lockObj = new object();
         private bool _busStarted = false;
 
         public WebsocketsMiddleware(RequestDelegate next, IWebsocketsHandler<T> handler,
-            IBusService busService, IInterprocessMessageReceiver interProcessMessageReceiver,
+            IInboundMessageQueue inboundMessageQueue, IInterprocessMessageReceiver interProcessMessageReceiver,
             ILogger logger)
         {
             _next = next;
             _handler = handler;
-            _busService = busService;
+            _inboundMessageQueue = inboundMessageQueue;
             _interProcessMessageReceiver = interProcessMessageReceiver;
             _logger = logger;
         }
@@ -60,7 +59,7 @@ namespace Iris.Api.Middleware
                     return;
                 }
 
-                _busService.Start();
+                _inboundMessageQueue.Start();
                 _interProcessMessageReceiver.Start();
 
                 _busStarted = true;

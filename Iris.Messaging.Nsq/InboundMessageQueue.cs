@@ -7,17 +7,12 @@ using System.Collections.Generic;
 
 namespace Iris.Messaging.Nsq
 {
-    public interface IBusService
-    {
-        void Start();
-    }
-
-    public class BusService<T> : IBusService, IDisposable where T : IUserMessage
+    public class InboundMessageQueue<T> : IInboundMessageQueue, IDisposable where T : IUserMessage
     {
         private readonly BusConfiguration _busConfiguration;
 
         //TODO: consolidate DI
-        public BusService(IMessageDispatcher<T> dispatcher, ILogger logger,
+        public InboundMessageQueue(IMessageDispatcher<T> dispatcher, ILogger logger,
             INsqConfiguration configuration)
         {
             var structureMapContainer = new StructureMap.Container();
