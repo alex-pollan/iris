@@ -12,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace Iris.Api.Middleware
 {
-    public interface IWebsocketsHandler<T> where T : IUserMessage
+    public interface IWebsocketsHandler
     {
         Task Register(HttpContext context, WebSocket webSocket);
     }
 
-    public class WebsocketsHandler<T> : IWebsocketsHandler<T>, IMessageDeliverer<T> where T : IUserMessage
+    public class WebsocketsHandler : IWebsocketsHandler, IMessageDeliverer
     {
         private ConcurrentDictionary<string, Channel> _channels;
         private readonly ILogger _logger;
-        private readonly IConnectionRequirement<T> _connectionRequirement;
+        private readonly IConnectionRequirement _connectionRequirement;
 
-        public WebsocketsHandler(IConnectionRequirement<T> connectionRequirement, ILogger logger)
+        public WebsocketsHandler(IConnectionRequirement connectionRequirement, ILogger logger)
         {
             _channels = new ConcurrentDictionary<string, Channel>();
             _logger = logger;
@@ -46,7 +46,7 @@ namespace Iris.Api.Middleware
             _channels.TryRemove(context.Connection.Id, out Channel removed);
         }
 
-        public async Task TryToSend(T message)
+        public async Task TryToSend(IUserMessage message)
         {
             _logger.Log($"WebsocketsHandler - Trying to send message: {message}");
 

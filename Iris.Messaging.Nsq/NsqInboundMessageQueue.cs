@@ -7,14 +7,21 @@ using System.Collections.Generic;
 
 namespace Iris.Messaging.Nsq
 {
-    public class InboundMessageQueue<T> : IInboundMessageQueue, IDisposable where T : IUserMessage
+    public class NsqInboundMessageQueue : IInboundMessageQueue, IDisposable 
     {
         private readonly BusConfiguration _busConfiguration;
 
+        public ICollection<Type> MessageTypes { get; } = new List<Type>();
+
         //TODO: consolidate DI
-        public InboundMessageQueue(IMessageDispatcher<T> dispatcher, ILogger logger,
-            INsqConfiguration configuration)
+        public NsqInboundMessageQueue(IMessageDispatcher dispatcher, ILogger logger,
+            NsqConfiguration configuration)
         {
+            foreach (var item in configuration.MessageTypeTopics.Keys)
+            {
+                MessageTypes.Add(item);
+            }
+            
             var structureMapContainer = new StructureMap.Container();
             structureMapContainer.Configure(p =>
             {
@@ -24,19 +31,12 @@ namespace Iris.Messaging.Nsq
                     x.WithDefaultConventions();
                 });
 
-                p.For<IMessageDispatcher<T>>().Use(dispatcher);
+                p.For<IMessageDispatcher>().Use(dispatcher);
                 p.For<ILogger>().Use(logger);
             });
 
-            var messageTopics = new Dictionary<Type, string>
-            {
-                { typeof(T), "HelloMessage" }
-            };
-
-            var handlerChannels = new Dictionary<Type, string>
-            {
-                { typeof(NsqHandler<T>), "HelloMessage-Channel" }
-            };
+            var messageTopics = new Dictionary<Type, string>(configuration.MessageTypeTopics);
+            var handlerChannels = new Dictionary<Type, string>(configuration.MessageHandlerTypeChannels);
 
             _busConfiguration = new BusConfiguration(
                 new StructureMapObjectBuilder(structureMapContainer), // dependency injection container

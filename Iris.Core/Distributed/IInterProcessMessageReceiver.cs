@@ -1,7 +1,9 @@
-﻿namespace Iris.Distributed
+﻿using System;
+
+namespace Iris.Distributed
 {
     public interface IInterprocessMessageReceiver
     {
-        void Start();
+        void Start(Type messageType);
     }
 }

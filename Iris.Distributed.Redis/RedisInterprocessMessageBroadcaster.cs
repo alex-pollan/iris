@@ -3,11 +3,12 @@ using Iris.Messaging;
 using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Newtonsoft;
+using System;
 using System.Threading;
 
 namespace Iris.Distributed.Redis
 {
-    public class RedisInterprocessMessageBroadcaster<T> : IInterprocessMessageBroadcaster<T> where T : IUserMessage
+    public class RedisInterprocessMessageBroadcaster : IInterprocessMessageBroadcaster
     {
         private readonly IAppRedisConfiguration _configuration;
         private readonly IInterprocessIdentity _interprocessIdentity;
@@ -21,14 +22,16 @@ namespace Iris.Distributed.Redis
             _logger = logger;
         }
 
-        public void Dispatch(T message)
+        public void Dispatch<T>(T message) where T : IUserMessage
         {
             using (var client = new StackExchangeRedisCacheClient(new NewtonsoftSerializer(), _configuration.ToRedisConfiguration()))
             {
                 Log($"Dispatching interprocess message: {message}");
 
-                var count = client.Publish(new RedisChannel(_configuration.Channel, RedisChannel.PatternMode.Literal),
-                    new InterprocessMessage<T>
+                var typeName = typeof(T).Name;
+                
+                var count = client.Publish(new RedisChannel($"{_configuration.Channel}.{typeName}", RedisChannel.PatternMode.Literal),
+                    new InterprocessMessage
                     {
                         SenderId = _interprocessIdentity.Name,
                         Message = message

@@ -2,10 +2,10 @@
 
 namespace Iris.Messaging
 {
-    public interface IConnectionRequirement<T> where T : IUserMessage
+    public interface IConnectionRequirement
     {
         bool IsValidConnection(HttpContext context);
-        bool ShouldSendMessage(HttpContext context, T message);
+        bool ShouldSendMessage(HttpContext context, IUserMessage message);
         object GetDescription(HttpContext context);
     }
 }

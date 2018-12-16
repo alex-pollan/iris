@@ -2,8 +2,8 @@
 
 namespace Iris.Distributed
 {
-    public interface IInterprocessMessageBroadcaster<T> where T : IUserMessage
+    public interface IInterprocessMessageBroadcaster
     {
-        void Dispatch(T message);
+        void Dispatch<T>(T message) where T : IUserMessage;
     }
 }

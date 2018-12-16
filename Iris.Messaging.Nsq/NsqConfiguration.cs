@@ -1,21 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Iris.Messaging.Nsq
-{    
-    public interface INsqConfiguration
+{
+    public class NsqConfiguration
     {
-        string[] LookupdHttpEndpoints { get; set; }
-    }
-
-    public class NsqConfiguration : INsqConfiguration
-    {
-        public NsqConfiguration(IConfiguration configuration)
+        public NsqConfiguration(string endpoints, Dictionary<Type, string> messageTypeTopics,
+            Dictionary<Type, string> messageHandlerTypeChannels)
         {
-            LookupdHttpEndpoints = configuration["vcap:services:user-provided:0:credentials:lookup"]
-                .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            LookupdHttpEndpoints = endpoints.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            MessageTypeTopics = messageTypeTopics;
+            MessageHandlerTypeChannels = messageHandlerTypeChannels;
         }
 
         public string[] LookupdHttpEndpoints { get; set; }
+        public Dictionary<Type, string> MessageTypeTopics { get; }
+        public Dictionary<Type, string> MessageHandlerTypeChannels { get; internal set; }
     }
 }

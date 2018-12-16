@@ -2,10 +2,10 @@
 
 namespace Iris.Distributed
 {
-    public class InterprocessMessage<T> where T : IUserMessage
+    public class InterprocessMessage
     {
         public string SenderId { get; set; }
-        public T Message { get; set; }
+        public object Message { get; set; }
 
         public override string ToString()
         {

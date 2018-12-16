@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Iris.Api.Messaging;
+using Iris.Api.Middleware;
+using Iris.Distributed;
+using Iris.Distributed.Redis;
+using Iris.Logging;
+using Iris.Messaging;
+using Iris.Messaging.Nsq;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,13 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
-using Iris.Distributed;
-using Iris.Distributed.Redis;
-using Iris.Messaging;
-using Iris.Api.Middleware;
-using Iris.Messaging.Nsq;
-using Iris.Api.Messaging;
-using Iris.Logging;
 
 namespace Iris.Api
 {
@@ -30,16 +30,24 @@ namespace Iris.Api
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<IWebsocketsHandler<HelloMessage>, WebsocketsHandler<HelloMessage>>();
-            services.AddSingleton(sp => sp.GetService<IWebsocketsHandler<HelloMessage>>() as IMessageDeliverer<HelloMessage>);
-            services.AddSingleton<IInboundMessageQueue, InboundMessageQueue<HelloMessage>>();
-            services.AddSingleton<INsqConfiguration, NsqConfiguration>();
+            services.AddSingleton<IWebsocketsHandler, WebsocketsHandler>();
+            services.AddSingleton(sp => sp.GetService<IWebsocketsHandler>() as IMessageDeliverer);
+
+            services.AddNsqInboundMessaging(options =>
+            {
+                options.UseEndpoints(Configuration["vcap:services:user-provided:0:credentials:lookup"]);
+                options.AcceptMessage(
+                    typeof(HelloMessage), "HelloMessage",
+                    typeof(NsqHandler<HelloMessage>), "HelloMessage-Channel"
+                );
+            });
+
             services.AddSingleton<IAppRedisConfiguration, AppRedisConfiguration>();
-            services.AddSingleton<IInterprocessMessageBroadcaster<HelloMessage>, RedisInterprocessMessageBroadcaster<HelloMessage>>();
-            services.AddSingleton<IInterprocessMessageReceiver, RedisInterprocessMessageReceiver<HelloMessage>>();
+            services.AddSingleton<IInterprocessMessageBroadcaster, RedisInterprocessMessageBroadcaster>();
+            services.AddSingleton<IInterprocessMessageReceiver, RedisInterprocessMessageReceiver>();
             services.AddSingleton<IInterprocessIdentity, MachineNameInterprocessIdentity>();
-            services.AddSingleton<IMessageDispatcher<HelloMessage>, MessageDispatcher<HelloMessage>>();
-            services.AddSingleton<IConnectionRequirement<HelloMessage>, CustomerSetConnectionRequirement<HelloMessage>>();
+            services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
+            services.AddSingleton<IConnectionRequirement, CustomerSetConnectionRequirement>();
             services.AddSingleton<ILogger, Logger>();
         }
 
@@ -74,7 +82,7 @@ namespace Iris.Api
             };
             app.UseWebSockets(webSocketOptions);
 
-            app.UseMiddleware<WebsocketsMiddleware<HelloMessage>>();
+            app.UseMiddleware<WebsocketsMiddleware>();
 
             app.UseMvcWithDefaultRoute();
 

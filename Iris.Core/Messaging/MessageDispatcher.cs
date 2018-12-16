@@ -1,26 +1,25 @@
 ﻿using Iris.Distributed;
+using System;
 
 namespace Iris.Messaging
 {
-    public interface IMessageDispatcher<T> where T : IUserMessage
+    //TODO: delete, not necessary anymore
+    public interface IMessageDispatcher
     {
-        void Dispatch(T message);
+        void Dispatch<T>(T message) where T : IUserMessage;
     }
 
-    public class MessageDispatcher<T> : IMessageDispatcher<T> where T : IUserMessage
+    public class MessageDispatcher : IMessageDispatcher
     {
-        private readonly IMessageDeliverer<T> _messageDeliverer;
-        private readonly IInterprocessMessageBroadcaster<T> _interprocessMessageDispatcher;
+        private readonly IInterprocessMessageBroadcaster _interprocessMessageDispatcher;
 
-        public MessageDispatcher(IMessageDeliverer<T> messageDeliverer, IInterprocessMessageBroadcaster<T> interprocessMessageDispatcher)
+        public MessageDispatcher(IInterprocessMessageBroadcaster interprocessMessageDispatcher)
         {
-            _messageDeliverer = messageDeliverer;
             _interprocessMessageDispatcher = interprocessMessageDispatcher;
         }
 
-        public void Dispatch(T message)
+        public void Dispatch<T>(T message) where T : IUserMessage
         {
-            _messageDeliverer.TryToSend(message);
             _interprocessMessageDispatcher.Dispatch(message);
         }
     }

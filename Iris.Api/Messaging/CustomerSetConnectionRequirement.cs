@@ -4,7 +4,7 @@ using System;
 
 namespace Iris.Api.Messaging
 {
-    public class CustomerSetConnectionRequirement<T> : IConnectionRequirement<T> where T : IUserMessage
+    public class CustomerSetConnectionRequirement : IConnectionRequirement
     {
         public object GetDescription(HttpContext context)
         {
@@ -16,7 +16,7 @@ namespace Iris.Api.Messaging
             return context.Request.Query["customerSet"].Count > 0;
         }
 
-        public bool ShouldSendMessage(HttpContext context, T message)
+        public bool ShouldSendMessage(HttpContext context, IUserMessage message)
         {
             return (message as HelloMessage).CustomerSet.Equals(context.Request.Query["customerSet"], StringComparison.InvariantCultureIgnoreCase);
         }

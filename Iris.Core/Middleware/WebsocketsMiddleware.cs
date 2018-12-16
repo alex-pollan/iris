@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Iris.Api.Middleware
 {
-    public class WebsocketsMiddleware<T> where T : IUserMessage
+    public class WebsocketsMiddleware 
     {
         private readonly RequestDelegate _next;
-        private readonly IWebsocketsHandler<T> _handler;
+        private readonly IWebsocketsHandler _handler;
         private readonly IInboundMessageQueue _inboundMessageQueue;
         private readonly IInterprocessMessageReceiver _interProcessMessageReceiver;
         private readonly ILogger _logger;
         private readonly object _lockObj = new object();
         private bool _busStarted = false;
 
-        public WebsocketsMiddleware(RequestDelegate next, IWebsocketsHandler<T> handler,
+        public WebsocketsMiddleware(RequestDelegate next, IWebsocketsHandler handler,
             IInboundMessageQueue inboundMessageQueue, IInterprocessMessageReceiver interProcessMessageReceiver,
             ILogger logger)
         {
@@ -60,7 +60,11 @@ namespace Iris.Api.Middleware
                 }
 
                 _inboundMessageQueue.Start();
-                _interProcessMessageReceiver.Start();
+
+                foreach (var messageType in _inboundMessageQueue.MessageTypes)
+                {
+                    _interProcessMessageReceiver.Start(messageType);
+                }
 
                 _busStarted = true;
             }

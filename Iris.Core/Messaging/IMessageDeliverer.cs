@@ -2,8 +2,8 @@
 
 namespace Iris.Messaging
 {
-    public interface IMessageDeliverer<T> where T : IUserMessage
+    public interface IMessageDeliverer
     {
-        Task TryToSend(T message);
+        Task TryToSend(IUserMessage message);
     }
 }
