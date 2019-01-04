@@ -20,10 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Iris.Core\Iris.Core.csproj" />
-    <ProjectReference Include="..\..\Iris.Distributed.Redis\Iris.Distributed.Redis.csproj" />
-    <ProjectReference Include="..\..\Iris.Messaging.Nsq\Iris.Messaging.Nsq.csproj" />
-    <ProjectReference Include="..\..\Iris.NetCore\Iris.NetCore.csproj" />
+    <ProjectReference Include="..\..\..\Iris.NetCore\Iris.NetCore.csproj" />
+    <ProjectReference Include="..\Iris.Messaging.Nsq\Iris.Messaging.Nsq.csproj" />
   </ItemGroup>
 
   <ItemGroup>
