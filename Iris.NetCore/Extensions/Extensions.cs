@@ -13,8 +13,8 @@ namespace Iris.NetCore.Extensions
 {
     public static class Extensions
     {
-        public static IServiceCollection AddIris(this IServiceCollection services, 
-            Action<IrisStartupOptions> options) 
+        public static IServiceCollection AddIris(this IServiceCollection services,
+            Action<IrisStartupOptions> options)
         {
             var startupOptions = new IrisStartupOptions();
 
@@ -27,9 +27,12 @@ namespace Iris.NetCore.Extensions
 
             services.AddSingleton<IWebsocketsHandler, WebsocketsHandler>();
             services.AddSingleton(sp => sp.GetService<IWebsocketsHandler>() as IMessageDeliverer);
-            services.AddSingleton<IAppRedisConfiguration, AppRedisConfiguration>();
+            services.AddSingleton<IAppRedisConfiguration>(provider => 
+            {
+                return startupOptions.RedisConfiguration;
+            });
             services.AddSingleton<IInterprocessMessageBroadcaster, RedisInterprocessMessageBroadcaster>();
-            services.AddSingleton<IInterprocessMessageReceiver, RedisInterprocessMessageReceiver>(provider=> 
+            services.AddSingleton<IInterprocessMessageReceiver>(provider =>
             {
                 var receiver = new RedisInterprocessMessageReceiver(
                     provider.GetService<IAppRedisConfiguration>(),
@@ -40,7 +43,7 @@ namespace Iris.NetCore.Extensions
                 foreach (var messageType in startupOptions.InterprocessMessageReceiverMessageTypes)
                 {
                     receiver.RegisterMessageType(messageType);
-                }                
+                }
 
                 return receiver;
             });
@@ -52,7 +55,7 @@ namespace Iris.NetCore.Extensions
             return services;
         }
 
-        public static IApplicationBuilder UseIrisMiddleware(this IApplicationBuilder app, 
+        public static IApplicationBuilder UseIrisMiddleware(this IApplicationBuilder app,
             WebSocketOptions webSocketOptions = null)
         {
             if (webSocketOptions == null)
@@ -76,6 +79,7 @@ namespace Iris.NetCore.Extensions
     {
         internal Type ConnectionRequirementType;
         internal List<Type> InterprocessMessageReceiverMessageTypes = new List<Type>();
+        internal AppRedisConfiguration RedisConfiguration = new AppRedisConfiguration();
 
         internal IrisStartupOptions() { }
 
@@ -98,6 +102,16 @@ namespace Iris.NetCore.Extensions
             return this;
         }
 
+        public IrisStartupOptions ConfigureRedis(string host, int port, string password, string channel)
+        {
+            RedisConfiguration.Host = host;
+            RedisConfiguration.Port = port;
+            RedisConfiguration.Password = password;
+            RedisConfiguration.Channel = channel;
+
+            return this;
+        }
+
         internal bool IsValid(out string errorMessage)
         {
             if (!IsConnectionRequirementValid())
@@ -112,7 +126,7 @@ namespace Iris.NetCore.Extensions
 
         private bool IsConnectionRequirementValid()
         {
-            return ConnectionRequirementType.IsClass 
+            return ConnectionRequirementType.IsClass
                 && ConnectionRequirementType.GetInterfaces().Any(i => i.IsAssignableFrom(typeof(IConnectionRequirement)));
         }
     }

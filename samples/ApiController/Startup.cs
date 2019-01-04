@@ -1,6 +1,4 @@
-﻿using Iris.Api.Middleware;
-using Iris.Messaging;
-using Iris.NetCore.Extensions;
+﻿using Iris.NetCore.Extensions;
 using Iris.Samples.ApiController.Messaging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +29,10 @@ namespace Iris.Samples.ApiController
             {
                 options.UseConnectionRequirement(typeof(CustomerSetConnectionRequirement));
                 options.AcceptMessage(typeof(HelloMessage));
+                options.ConfigureRedis(Configuration["vcap:services:user-provided:1:credentials:host"],
+                    int.Parse(Configuration["vcap:services:user-provided:1:credentials:port"]),
+                    Configuration["vcap:services:user-provided:1:credentials:password"],
+                    Configuration["vcap:services:user-provided:1:credentials:channel"]);
             });
         }
 

@@ -32,6 +32,10 @@ namespace Iris.Samples.Nsq
             {
                 options.UseConnectionRequirement(typeof(CustomerSetConnectionRequirement));
                 options.AcceptMessage(typeof(HelloMessage));
+                options.ConfigureRedis(Configuration["vcap:services:user-provided:1:credentials:host"],
+                    int.Parse(Configuration["vcap:services:user-provided:1:credentials:port"]),
+                    Configuration["vcap:services:user-provided:1:credentials:password"],
+                    Configuration["vcap:services:user-provided:1:credentials:channel"]);
             });
 
             services.AddIrisNsqInboundMessaging(options =>
