@@ -1,6 +1,6 @@
 ﻿using Iris.Messaging;
 
-namespace Iris.Api.Messaging
+namespace Iris.Samples.ApiController.Messaging
 {
     public class HelloMessage : IUserMessage
     {

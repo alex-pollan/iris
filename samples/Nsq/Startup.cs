@@ -1,10 +1,8 @@
-﻿using Iris.Api.Messaging;
-using Iris.Api.Middleware;
-using Iris.Distributed;
-using Iris.Distributed.Redis;
-using Iris.Logging;
+﻿using Iris.Api.Middleware;
 using Iris.Messaging;
-using Iris.Messaging.Nsq;
+using Iris.Messaging.Nsq.Extensions;
+using Iris.NetCore.Extensions;
+using Iris.Samples.Nsq.Messaging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 
-namespace Iris.Api
+namespace Iris.Samples.Nsq
 {
     public class Startup
     {
@@ -30,25 +28,17 @@ namespace Iris.Api
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<IWebsocketsHandler, WebsocketsHandler>();
-            services.AddSingleton(sp => sp.GetService<IWebsocketsHandler>() as IMessageDeliverer);
-
-            services.AddNsqInboundMessaging(options =>
+            services.AddIris(options =>
             {
-                options.UseEndpoints(Configuration["vcap:services:user-provided:0:credentials:lookup"]);
-                options.AcceptMessage(
-                    typeof(HelloMessage), "HelloMessage",
-                    typeof(NsqHandler<HelloMessage>), "HelloMessage-Channel"
-                );
+                options.UseConnectionRequirement(typeof(CustomerSetConnectionRequirement));
+                options.AcceptMessage(typeof(HelloMessage));
             });
 
-            services.AddSingleton<IAppRedisConfiguration, AppRedisConfiguration>();
-            services.AddSingleton<IInterprocessMessageBroadcaster, RedisInterprocessMessageBroadcaster>();
-            services.AddSingleton<IInterprocessMessageReceiver, RedisInterprocessMessageReceiver>();
-            services.AddSingleton<IInterprocessIdentity, MachineNameInterprocessIdentity>();
-            services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
-            services.AddSingleton<IConnectionRequirement, CustomerSetConnectionRequirement>();
-            services.AddSingleton<ILogger, Logger>();
+            services.AddIrisNsqInboundMessaging(options =>
+            {
+                options.UseEndpoints(Configuration["vcap:services:user-provided:0:credentials:lookup"]);
+                options.AcceptMessage<HelloMessage>("HelloMessage", "HelloMessage-Channel");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,14 +65,7 @@ namespace Iris.Api
 
             app.UseHttpsRedirection();
 
-            var webSocketOptions = new WebSocketOptions()
-            {
-                KeepAliveInterval = TimeSpan.FromSeconds(120),
-                ReceiveBufferSize = 4 * 1024
-            };
-            app.UseWebSockets(webSocketOptions);
-
-            app.UseMiddleware<WebsocketsMiddleware>();
+            app.UseIrisMiddleware();
 
             app.UseMvcWithDefaultRoute();
 

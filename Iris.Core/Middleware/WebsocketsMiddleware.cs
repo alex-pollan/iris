@@ -1,29 +1,26 @@
 ﻿using Iris.Distributed;
 using Iris.Logging;
-using Iris.Messaging;
 using Microsoft.AspNetCore.Http;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
 namespace Iris.Api.Middleware
 {
-    public class WebsocketsMiddleware 
+    public class WebsocketsMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly IWebsocketsHandler _handler;
-        private readonly IInboundMessageQueue _inboundMessageQueue;
         private readonly IInterprocessMessageReceiver _interProcessMessageReceiver;
         private readonly ILogger _logger;
         private readonly object _lockObj = new object();
-        private bool _busStarted = false;
+        private bool _started = false;
 
         public WebsocketsMiddleware(RequestDelegate next, IWebsocketsHandler handler,
-            IInboundMessageQueue inboundMessageQueue, IInterprocessMessageReceiver interProcessMessageReceiver,
+            IInterprocessMessageReceiver interProcessMessageReceiver,
             ILogger logger)
         {
             _next = next;
             _handler = handler;
-            _inboundMessageQueue = inboundMessageQueue;
             _interProcessMessageReceiver = interProcessMessageReceiver;
             _logger = logger;
         }
@@ -54,19 +51,14 @@ namespace Iris.Api.Middleware
         {
             lock (_lockObj)
             {
-                if (_busStarted)
+                if (_started)
                 {
                     return;
                 }
 
-                _inboundMessageQueue.Start();
+                _interProcessMessageReceiver.Start();
 
-                foreach (var messageType in _inboundMessageQueue.MessageTypes)
-                {
-                    _interProcessMessageReceiver.Start(messageType);
-                }
-
-                _busStarted = true;
+                _started = true;
             }
         }
     }

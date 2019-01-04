@@ -1,0 +1,9 @@
+﻿---
+applications:
+- name: Iris-Samples-Nsq
+  stack: cflinuxfs2
+  buildpack: dotnet_core_buildpack_215
+  memory: 512M
+  disk_quota: 512M
+  health-check-type: process
+  timeout: 180

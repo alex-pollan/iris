@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Iris.Messaging
+namespace Iris.Messaging.Nsq
 {
     public interface IInboundMessageQueue
     {

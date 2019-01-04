@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
+    <RootNamespace>Iris.Samples.Nsq</RootNamespace>
+    <StartupObject>Iris.Samples.Nsq.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="app\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Iris.Core\Iris.Core.csproj" />
+    <ProjectReference Include="..\..\Iris.Distributed.Redis\Iris.Distributed.Redis.csproj" />
+    <ProjectReference Include="..\..\Iris.Messaging.Nsq\Iris.Messaging.Nsq.csproj" />
+    <ProjectReference Include="..\..\Iris.NetCore\Iris.NetCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="manifest.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

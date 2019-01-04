@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
-namespace Iris.Messaging.Nsq
+namespace Iris.Messaging.Nsq.Extensions
 {
     public static class Extensions
     {
-        public static IServiceCollection AddNsqInboundMessaging(this IServiceCollection services, 
+        public static IServiceCollection AddIrisNsqInboundMessaging(this IServiceCollection services, 
             Action<NsqOptions> options)
         {
             var nsqOptions = new NsqOptions();
@@ -22,6 +22,11 @@ namespace Iris.Messaging.Nsq
                     nsqOptions.MessageTypeTopics, nsqOptions.MessageTypeHandlerChannels);
                 return new NsqInboundMessageQueue(dispatcher, logger, configuration);
             });
+
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            serviceProvider.GetService<IInboundMessageQueue>().Start();
 
             return services;
         }
@@ -40,10 +45,10 @@ namespace Iris.Messaging.Nsq
             Endpoints = endpoints;
         }
 
-        public void AcceptMessage(Type type, string topic, Type handlerType, string channelName)
+        public void AcceptMessage<T>(string topic, string channelName) where T : class, IUserMessage
         {
-            MessageTypeTopics.Add(type, topic);
-            MessageTypeHandlerChannels.Add(handlerType, channelName);
+            MessageTypeTopics.Add(typeof(T), topic);
+            MessageTypeHandlerChannels.Add(typeof(NsqHandler<T>), channelName);
         }
     }
 }

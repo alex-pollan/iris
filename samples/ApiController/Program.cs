@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
 
-namespace Iris.Api
+namespace Iris.Samples.ApiController
 {
     public class Program
     {

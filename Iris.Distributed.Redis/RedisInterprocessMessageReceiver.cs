@@ -19,6 +19,7 @@ namespace Iris.Distributed.Redis
         private readonly ILogger _logger;
         private StackExchangeRedisCacheClient _client;
         private readonly Dictionary<Type, MessageReceivedHandler> _handlers;
+        private List<Type> _messageTypes = new List<Type>();
 
         public RedisInterprocessMessageReceiver(IAppRedisConfiguration configuration,
             IInterprocessIdentity interprocessIdentity,
@@ -49,17 +50,25 @@ namespace Iris.Distributed.Redis
             _client = null;
         }
 
-        public void Start(Type messageType)
+        public void RegisterMessageType(Type messageType)
         {
-            var handler = new MessageReceivedHandler(this, messageType);
+            _messageTypes.Add(messageType);
+        }
 
-            //to ensure uniqueness
-            _handlers.Add(messageType, handler);
+        public void Start()
+        {
+            foreach (var messageType in _messageTypes)
+            {
+                var handler = new MessageReceivedHandler(this, messageType);
 
-            _client.SubscribeAsync<InterprocessMessage>(new RedisChannel($"{_configuration.Channel}.{messageType.Name}",
-                RedisChannel.PatternMode.Literal), handler.OnMesssageReceived);
+                //to ensure uniqueness
+                _handlers.Add(messageType, handler);
 
-            Log($"Subscribed to Redis channel {_configuration.Channel}");
+                _client.SubscribeAsync<InterprocessMessage>(new RedisChannel($"{_configuration.Channel}.{messageType.Name}",
+                    RedisChannel.PatternMode.Literal), handler.OnMesssageReceived);
+
+                Log($"Subscribed to Redis channel {_configuration.Channel}");
+            }
         }
 
         private void Log(string message)

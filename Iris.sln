@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iris.Api", "Iris.Api\Iris.Api.csproj", "{6B5E679E-E4D1-4E6F-A6BE-1D1E39E6B5EF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FE903AFA-D20F-4126-B852-322F4849E1E3}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -12,11 +10,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iris.Messaging.Nsq", "Iris.Messaging.Nsq\Iris.Messaging.Nsq.csproj", "{1E8BE58E-3788-4F40-9AC2-942278449D2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iris.Messaging.Nsq", "Iris.Messaging.Nsq\Iris.Messaging.Nsq.csproj", "{1E8BE58E-3788-4F40-9AC2-942278449D2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iris.Distributed.Redis", "Iris.Distributed.Redis\Iris.Distributed.Redis.csproj", "{879C572D-5CB8-4674-A32F-4419734B320A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iris.Distributed.Redis", "Iris.Distributed.Redis\Iris.Distributed.Redis.csproj", "{879C572D-5CB8-4674-A32F-4419734B320A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iris.Core", "Iris.Core\Iris.Core.csproj", "{6650ED8F-137E-4297-A459-1DBB2E572406}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iris.Core", "Iris.Core\Iris.Core.csproj", "{6650ED8F-137E-4297-A459-1DBB2E572406}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{86972444-4CFD-4E4C-A7DC-07086CA210AE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iris.Samples.Nsq", "samples\Nsq\Iris.Samples.Nsq.csproj", "{9832E7C1-E0D1-4DE1-8032-F184767CFE4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iris.NetCore", "Iris.NetCore\Iris.NetCore.csproj", "{E630AC0B-5FD5-48BA-BBFA-D828AFBFB127}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iris.Samples.ApiController", "samples\ApiController\Iris.Samples.ApiController.csproj", "{A6F40D17-0557-40D5-9F49-501D010C83C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +30,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6B5E679E-E4D1-4E6F-A6BE-1D1E39E6B5EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B5E679E-E4D1-4E6F-A6BE-1D1E39E6B5EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B5E679E-E4D1-4E6F-A6BE-1D1E39E6B5EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B5E679E-E4D1-4E6F-A6BE-1D1E39E6B5EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1E8BE58E-3788-4F40-9AC2-942278449D2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E8BE58E-3788-4F40-9AC2-942278449D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E8BE58E-3788-4F40-9AC2-942278449D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,9 +42,25 @@ Global
 		{6650ED8F-137E-4297-A459-1DBB2E572406}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6650ED8F-137E-4297-A459-1DBB2E572406}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6650ED8F-137E-4297-A459-1DBB2E572406}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9832E7C1-E0D1-4DE1-8032-F184767CFE4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9832E7C1-E0D1-4DE1-8032-F184767CFE4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9832E7C1-E0D1-4DE1-8032-F184767CFE4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9832E7C1-E0D1-4DE1-8032-F184767CFE4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E630AC0B-5FD5-48BA-BBFA-D828AFBFB127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E630AC0B-5FD5-48BA-BBFA-D828AFBFB127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E630AC0B-5FD5-48BA-BBFA-D828AFBFB127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E630AC0B-5FD5-48BA-BBFA-D828AFBFB127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6F40D17-0557-40D5-9F49-501D010C83C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6F40D17-0557-40D5-9F49-501D010C83C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6F40D17-0557-40D5-9F49-501D010C83C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6F40D17-0557-40D5-9F49-501D010C83C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9832E7C1-E0D1-4DE1-8032-F184767CFE4F} = {86972444-4CFD-4E4C-A7DC-07086CA210AE}
+		{A6F40D17-0557-40D5-9F49-501D010C83C2} = {86972444-4CFD-4E4C-A7DC-07086CA210AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8415324E-3E58-4FE1-BF8B-A6BF6A2755A1}

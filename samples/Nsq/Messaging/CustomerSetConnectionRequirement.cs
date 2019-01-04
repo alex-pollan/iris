@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace Iris.Api.Messaging
+namespace Iris.Samples.Nsq.Messaging
 {
     public class CustomerSetConnectionRequirement : IConnectionRequirement
     {

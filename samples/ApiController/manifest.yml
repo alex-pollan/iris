@@ -1,6 +1,6 @@
 ﻿---
 applications:
-- name: websocket-test
+- name: Iris-Samples-Nsq
   stack: cflinuxfs2
   buildpack: dotnet_core_buildpack_215
   memory: 512M
